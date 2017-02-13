@@ -24,3 +24,9 @@ Route.get('/rikad/:id', function * (request, response) {
   const id = request.param('id')
   response.send('This is the home page $' + id)
 })
+
+
+
+Route.group('PO', function () {
+  Route.resource('organizations','OrganizationController')
+}).prefix('api/v1')
