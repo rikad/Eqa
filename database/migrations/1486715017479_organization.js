@@ -27,7 +27,7 @@ class OrganizationTableSchema extends Schema {
 
     this.create('po_organizations', (table) => {
       table.increments()
-      table.string('organization',30)
+      table.string('organization',50)
       table.string('abbreviation',10)
       table.string('address',50)
       table.string('email',30)
@@ -84,7 +84,6 @@ class OrganizationTableSchema extends Schema {
       table.increments()
       table.integer('organization_id').unsigned()
       table.integer('parent_id').unsigned()
-      table.string('decree',80)
 
       table.foreign('organization_id').references('po_organizations.id')
       table.foreign('parent_id').references('po_organizations.id')

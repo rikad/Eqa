@@ -1,0 +1,273 @@
+{% extends 'layout_app' %}
+
+{% block content %}
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+
+				<!-- Navigation-->
+				<ul class="breadcrumb">
+					<li><a href="#">Dashboard</a></li>
+					<li class="active">People</li>
+				</ul>
+				<!-- End Navigation-->
+
+				<!-- content-->
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h2 class="panel-title">People</h2>
+					</div>
+					<div class="panel-body">
+						<!-- Button-->
+						<div class="action" align="right">
+							<button class="btn btn-primary" id="formBtn">Add</button>
+						</div>
+						<!-- End Button-->
+						<hr>
+
+						<table id="data" class="tree table table-striped table-hover table-condensed">
+							<thead>
+								<tr>
+									<th class="column-check"><input class="check-all" type="checkbox"/></th>
+									<th>Prefix</th>
+									<th>Name</th>
+									<th>Suffix</th>
+									<th>Birthplace</th>
+									<th>Birthdate</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<td colspan="7">With selected <button class="btn btn-danger btn-sm deleteBtn">Delete</button>
+									</td>
+								</tr>
+							</tfoot>
+						<table>
+
+    				</div>
+				</div>
+				<!-- End content-->
+
+				<!-- Modal Add or edit-->
+				<div class="modal fade" id="formModal" role="dialog">
+					<div class="modal-dialog">
+
+					<!-- Modal content-->
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title"></h4>
+							</div>
+							<div class="modal-body">
+								<div class="form-group">
+									<div class="row">
+										<div class="col-xs-4">
+											{{ form.label('prefix', 'Prefix',{class: 'control-label'} ) }}
+											{{ form.text('prefix','',{class: 'form-control', placeholder: 'Dr.'} )}}
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									{{ form.label('name', 'Fullname',{class: 'control-label'} ) }}
+									{{ form.text('name','',{class: 'form-control'} )}}
+								</div>
+								<div class="form-group">
+									<div class="row">
+										<div class="col-xs-4">
+											{{ form.label('suffix', 'Suffix',{class: 'control-label'} ) }}
+											{{ form.text('suffix','',{class: 'form-control', placeholder: 'Ph.D'} )}}
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									{{ form.label('birthplace', 'Birthplace',{class: 'control-label'} ) }}
+									{{ form.text('birthplace','',{class: 'form-control', placeholder: 'Bandung'} )}}
+								</div>
+								<div class="form-group">
+									{{ form.label('birthdate', 'Birthdate',{class: 'control-label'} ) }}
+					                <div class='input-group date' id='date'>
+										{{ form.text('birthdate','',{class: 'form-control', placeholder: 'YYYY-MM-DD'} )}}
+					                    <span class="input-group-addon">
+					                        <span class="glyphicon glyphicon-calendar"></span>
+					                    </span>
+					                </div>
+								</div>
+								<hr>
+								<button type="button" class="btn btn-primary btn-block" data-dismiss="modal">Add</button>
+							</div>
+
+							<div class="modal-footer">
+								<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+							</div>
+						</div>
+					<!-- End Modal content-->
+
+					</div>
+				</div>
+				<!-- End Modal Add or edit-->
+
+				<!-- Modal View -->
+				<div class="modal fade" id="viewModal" role="dialog">
+					<div class="modal-dialog">
+
+					<!-- Modal content-->
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title"></h4>
+							</div>
+							<div class="modal-body">
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary">Edit</button>
+								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							</div>
+						</div>
+					<!-- End Modal content-->
+
+					</div>
+				</div>
+				<!-- End Modal View-->
+
+			<!-- end of col md 12-->
+			</div>
+		<!-- end of row-->
+		</div>
+	<!-- end of container-->
+	</div>
+
+{% endblock %}
+
+{% block css %}
+    <link href="/css/datatables/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap/bootstrap-datetimepicker.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block script %}
+    <script src="/js/datatables/jquery.dataTables.min.js"></script>
+    <script src="/js/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="/js/moment.min.js"></script>
+    <script src="/js/bootstrap/bootstrap-datetimepicker.min.js"></script>
+
+	<script>
+
+		var path ="{{ 'people.index' | route() }}";
+
+		$(document).ready(function() {
+
+			//datatable
+		    $('#data').DataTable( {
+		        "processing": true,
+		        "serverSide": true,
+		        "ajax": path,
+		        "columns": [{
+			        	"data":"id",
+			        	"name":"id",
+			        	"render": function(data){ 
+							return '<input class="checkbox" type="checkbox" name="checked[]" value="'+data+'"/>'
+			        	},
+			        	"orderable":false,
+			        	"searchable":false
+			        },{
+			        	"data":"prefix",
+			        	"name":"prefix",
+			        	"orderable":true,
+			        	"searchable":true
+			        },{
+			        	"data":"name",
+			        	"name":"name",
+			        	"orderable":true,
+			        	"searchable":true
+			        },{
+			        	"data":"suffix",
+			        	"name":"suffix",
+			        	"orderable":true,
+			        	"searchable":true
+			        },{
+			        	"data":"birth_place",
+			        	"name":"birth_place",
+			        	"orderable":false,
+			        	"searchable":false
+			        },{
+			        	"data":"birth_date",
+			        	"name":"birth_date",
+			        	"orderable":false,
+			        	"searchable":false
+			        },{
+			        	"data":"id",
+			        	"name":"id",
+			        	"render": function(data){ 
+			        		return '<button class="btn btn-xs btn-info" onclick="viewModal('+data+')">View</button>'
+			        	},
+			        	"orderable":false,
+			        	"searchable":false
+			        }
+		        ],
+			    "order": [[ 2, "asc" ]]
+
+		    } );
+
+		    //datepicker
+            $('#date').datetimepicker({
+            	format: 'Y-M-D'
+            });
+
+		} );
+
+		//button function
+		$(document).ready(function() {
+		    //column check all
+		    $('.check-all').click(function() {
+		    	if ($(this).prop('checked')) {
+			    	$('.checkbox').prop('checked',true);
+		    	}
+		    	else {
+			    	$('.checkbox').prop('checked',false);
+		    	}
+		    })
+
+		    //Show add section
+		    $('#formBtn').click( function() {
+		    	var title = "Add New Data";
+		    	$('#formModal').modal();
+		    	$('#formModal .modal-title').html(title);
+		    })
+
+		    //multiple delete
+		    $('.deleteBtn').click( function() {
+		    	var title = [];
+		    	$('.checkbox:checked').each(function () {
+		    		title[title.length] = $(this).val();
+		    	});
+		    	$('#viewModal').modal();
+		    	$('#viewModal .modal-title').html(JSON.stringify(title));
+		    })
+		} );
+
+	    //Show View section
+		function viewModal(data) {
+			$(document).ready(function() {
+				var point = path+'/'+data;
+			    $.ajax({url: point, success: function(result){
+
+			    	var title = 'View : ' + result.data.name;
+			    	var body = '';
+
+			    	body += '<p>Name'+result.data.prefix+' '+ result.data.name +'</p>';
+			    	body += '<p>Name' + result.data.name + '</p>';
+			    	body += '<p>Name' + result.data.name + '</p>';
+			    	body += '<p>Name' + result.data.name + '</p>';
+			    	body += '<p>Name' + result.data.name + '</p>';
+
+			    	$('#viewModal').modal();
+			    	$('#viewModal .modal-title').html(title);
+			    	$('#viewModal .modal-body').html(body);
+
+			    }});
+			} )
+		}
+
+	</script>
+{% endblock %}

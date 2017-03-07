@@ -23,18 +23,26 @@
 									<th>#</th>
 									<th>Name</th>
 									<th>Form</th>
+									<th>Layer</th>
 									<th>Action</th>
 								</tr>
 						</thead>
 
 						<tbody>
-						    {% for item in data %} 
-								<tr class="treegrid-{{ item.id }} {% if item.parent_id != 0 %} {{ 'treegrid-parent-'+item.parent_id}} {% endif %}">
-									<td>{{ item.abbreviation }}</td>
-									<td>{{ item.organization }}</td>
+							{% set no = 0 %}
+						    {% for item in data %}
+							{% set no = no + 1 %}
+								<tr>
+									<td>{{ no }}</td>
 									<td>{{ item.form }}</td>
+									<td>{{ item.abbreviation }}</a></td>
+									<td>{{ item.description }}</td>
+									<td>{{ item.layer }}</td>
 									<td>action</td>
 				                </tr>
+
+						    {% else %}
+						    <p> Data Is Empty </p>
 						    {% endfor %}
 						</tbody>
 

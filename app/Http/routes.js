@@ -25,8 +25,17 @@ Route.get('/rikad/:id', function * (request, response) {
   response.send('This is the home page $' + id)
 })
 
+Route.group('AdminView', function () {
+	Route.resource('organizations','OrganizationController')
+	Route.resource('forms','FormController')
+	Route.resource('todo','TodoController')
 
+	Route.get('people', 'PeopleController.view')
+}).prefix('admin')
 
-Route.group('PO', function () {
-  Route.resource('organizations','OrganizationController')
-}).prefix('api/v1')
+Route.group('AdminRest', function () {
+	Route.resource('organizations','OrganizationController')
+	Route.resource('forms','FormController')
+	Route.resource('people','PeopleController')
+	Route.resource('todo','TodoController')
+}).prefix('admin/api')

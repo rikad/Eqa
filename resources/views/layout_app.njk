@@ -8,10 +8,9 @@
     <title>EQA</title>
 
     <!-- Styles -->
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/jquery.dataTables.css" rel="stylesheet">
-    <link href="/css/selectize.css" rel="stylesheet">
-    <link href="/css/selectize.bootstrap3.css" rel="stylesheet">
+    <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+
+    {% block css %}{% endblock %}
 
 </head>
 <body>
@@ -35,7 +34,16 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
                     <li><a href="#">Home</a></li>
-                    <li><a href="#">Organizations</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            Organizations <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="/admin/organizations">Organizations</a></li>
+                            <li><a href="/admin/people">People</a></li>
+                            <li><a href="/admin/forms">Form</a></li>
+                        </ul>
+                    </li>
                     <li><a href="#">Courses</a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -75,17 +83,18 @@
         </div>
     </nav>
 
+    <div class="container">
+       <div class="alert alert-danger">
+       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          tes notif
+       </div>
+    </div>
+
     {% block content %}{% endblock %}
 
     <!-- Scripts -->
-    <script src="/js/jquery.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-
-    <script src="/js/jquery.dataTables.min.js"></script>
-
-    <script src="/js/selectize.min.js"></script>
-
-    <script src="/js/custom.js"></script>
+    <script src="/js/jquery/jquery-3.1.1.min.js"></script>
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
 
     {% block script %}{% endblock %}
 
