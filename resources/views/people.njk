@@ -21,7 +21,7 @@
 					<div class="panel-body">
 						<!-- Button-->
 						<div class="action" align="right">
-							<button class="btn btn-primary" id="formBtn">Add</button>
+							<button class="btn btn-primary" id="addBtn">Add</button>
 						</div>
 						<!-- End Button-->
 						<hr>
@@ -40,7 +40,7 @@
 							</thead>
 							<tfoot>
 								<tr>
-									<td colspan="7">With selected <button class="btn btn-danger btn-sm deleteBtn">Delete</button>
+									<td colspan="7">With selected <button class="btn btn-danger btn-sm" id="deleteBtn">Delete</button>
 									</td>
 								</tr>
 							</tfoot>
@@ -61,44 +61,50 @@
 								<h4 class="modal-title"></h4>
 							</div>
 							<div class="modal-body">
-								<div class="form-group">
+							<form class="form-horizontal" name="mainForm" id="mainForm">
+								<div class="form-group" id="prefix-group">
 									<div class="row">
-										<div class="col-xs-4">
-											{{ form.label('prefix', 'Prefix',{class: 'control-label'} ) }}
-											{{ form.text('prefix','',{class: 'form-control', placeholder: 'Dr.'} )}}
+										<div class="col-md-4">
+									    <label class="control-label" for="prefix">Prefix :</label>
+									    <input type="text" name="prefix" class="form-control" id="prefix">
+									    <p style="display:none" class="help-block"></p>
 										</div>
 									</div>
 								</div>
-								<div class="form-group">
-									{{ form.label('name', 'Fullname',{class: 'control-label'} ) }}
-									{{ form.text('name','',{class: 'form-control'} )}}
+								<div class="form-group" id="name-group">
+							    <label class="control-label" for="name">FullName :</label>
+							    <input type="text" name="name" class="form-control" id="name">
+							    <p style="display:none" class="help-block"></p>
 								</div>
-								<div class="form-group">
+								<div class="form-group" id="suffix-group">
 									<div class="row">
 										<div class="col-xs-4">
-											{{ form.label('suffix', 'Suffix',{class: 'control-label'} ) }}
-											{{ form.text('suffix','',{class: 'form-control', placeholder: 'Ph.D'} )}}
+									    <label class="control-label" for="suffix">Suffix :</label>
+									    <input type="text" name="suffix" class="form-control" id="suffix">
+									    <p style="display:none" class="help-block"></p>
 										</div>
 									</div>
 								</div>
-								<div class="form-group">
-									{{ form.label('birthplace', 'Birthplace',{class: 'control-label'} ) }}
-									{{ form.text('birthplace','',{class: 'form-control', placeholder: 'Bandung'} )}}
+								<div class="form-group" id="birth_place-group">
+							    <label class="control-label" for="birth_place">Birthplace :</label>
+							    <input type="text" name="birth_place" class="form-control" id="birth_place">
+							    <p style="display:none" class="help-block"></p>
 								</div>
-								<div class="form-group">
-									{{ form.label('birthdate', 'Birthdate',{class: 'control-label'} ) }}
-					                <div class='input-group date' id='date'>
-										{{ form.text('birthdate','',{class: 'form-control', placeholder: 'YYYY-MM-DD'} )}}
-					                    <span class="input-group-addon">
-					                        <span class="glyphicon glyphicon-calendar"></span>
-					                    </span>
-					                </div>
+								<div class="form-group" id="birth_date-group">
+							    <label class="control-label" for="birth_date">Birthdate :</label>
+				            <div class='input-group date' id='date'>
+									    <input type="text" name="birth_date" class="form-control" id="birth_date" placeholder="YYYY-MM-DD">
+		                    <span class="input-group-addon">
+		                        <span class="glyphicon glyphicon-calendar"></span>
+		                    </span>
+									    <p style="display:none" class="help-block"></p>
+		                </div>
 								</div>
-								<hr>
-								<button type="button" class="btn btn-primary btn-block" data-dismiss="modal">Add</button>
+							</form>
 							</div>
 
 							<div class="modal-footer">
+								<button type="button" class="btn btn-primary modal-btn">Add</button>
 								<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
 							</div>
 						</div>
@@ -121,7 +127,7 @@
 							<div class="modal-body">
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary">Edit</button>
+								<button type="button" class="btn modal-btn">Edit</button>
 								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 							</div>
 						</div>
@@ -147,77 +153,94 @@
 
 {% block script %}
     <script src="/js/datatables/jquery.dataTables.min.js"></script>
+    <script src="/js/jquery/jquery.cookie.js"></script>
     <script src="/js/datatables/dataTables.bootstrap.min.js"></script>
     <script src="/js/moment.min.js"></script>
     <script src="/js/bootstrap/bootstrap-datetimepicker.min.js"></script>
 
 	<script>
-
 		var path ="{{ 'people.index' | route() }}";
+		var table = '#data';
+		var order = [[ 2, "asc" ]];
+		var fields = { prefix: "Prefix", name : "Name", suffix: "Suffix", birth_date: "Birthdate", birth_place: "Birthplace", created_at : "Created", updated_at : "Updated"  };
+		var columns = 
+			[{
+	      	"data":"id",
+	      	"name":"id",
+	      	"render": function(data){ 
+						return '<input class="checkbox" type="checkbox" name="checked[]" value="'+data+'"/>'
+	      	},
+	      	"orderable":false,
+	      	"searchable":false
+	      },{
+	      	"data":"prefix",
+	      	"name":"prefix",
+	      	"orderable":true,
+	      	"searchable":true
+	      },{
+	      	"data":"name",
+	      	"name":"name",
+	      	"render": function(data){ 
+						return '<span class="name">'+data+'</span>'
+	      	},
+	      	"orderable":true,
+	      	"searchable":true
+	      },{
+	      	"data":"suffix",
+	      	"name":"suffix",
+	      	"orderable":true,
+	      	"searchable":true
+	      },{
+	      	"data":"birth_place",
+	      	"name":"birth_place",
+	      	"orderable":false,
+	      	"searchable":false
+	      },{
+	      	"data":"birth_date",
+	      	"name":"birth_date",
+	      	"orderable":false,
+	      	"searchable":false
+	      },{
+	      	"data":"id",
+	      	"name":"id",
+	      	"render": function(id){ 
+	      		return '<button class="btn btn-xs btn-info" onclick="viewSection('+id+')">View</button>'
+	      	},
+	      	"orderable":false,
+	      	"searchable":false
+	      }
+	    ];
 
+	  //stop edit be carefull
+		var selected = '';
+		var viewData = '';
+		var mainForm = 'mainForm'; //don't use #
+		var formModal = $('#formModal');
+		var formModalTitle = $('#formModal .modal-title');
+		var formModalBody = $('#formModal .modal-body');
+  	var formModalButton = $('#formModal .modal-btn');
+		var viewModal = $('#viewModal');
+		var viewModalTitle = $('#viewModal .modal-title');
+		var viewModalBody = $('#viewModal .modal-body');
+  	var viewModalButton = $('#viewModal .modal-btn');
+
+		//datatable
 		$(document).ready(function() {
-
-			//datatable
-		    $('#data').DataTable( {
+		    $(table).DataTable( {
 		        "processing": true,
 		        "serverSide": true,
 		        "ajax": path,
-		        "columns": [{
-			        	"data":"id",
-			        	"name":"id",
-			        	"render": function(data){ 
-							return '<input class="checkbox" type="checkbox" name="checked[]" value="'+data+'"/>'
-			        	},
-			        	"orderable":false,
-			        	"searchable":false
-			        },{
-			        	"data":"prefix",
-			        	"name":"prefix",
-			        	"orderable":true,
-			        	"searchable":true
-			        },{
-			        	"data":"name",
-			        	"name":"name",
-			        	"orderable":true,
-			        	"searchable":true
-			        },{
-			        	"data":"suffix",
-			        	"name":"suffix",
-			        	"orderable":true,
-			        	"searchable":true
-			        },{
-			        	"data":"birth_place",
-			        	"name":"birth_place",
-			        	"orderable":false,
-			        	"searchable":false
-			        },{
-			        	"data":"birth_date",
-			        	"name":"birth_date",
-			        	"orderable":false,
-			        	"searchable":false
-			        },{
-			        	"data":"id",
-			        	"name":"id",
-			        	"render": function(data){ 
-			        		return '<button class="btn btn-xs btn-info" onclick="viewModal('+data+')">View</button>'
-			        	},
-			        	"orderable":false,
-			        	"searchable":false
-			        }
-		        ],
-			    "order": [[ 2, "asc" ]]
-
+		        "columns": columns,
+			      "order": order
 		    } );
-
-		    //datepicker
-            $('#date').datetimepicker({
-            	format: 'Y-M-D'
-            });
-
 		} );
 
 		//button function
 		$(document).ready(function() {
+
+		    //datepicker
+        $('#date').datetimepicker({ format: 'Y-M-D' });
+
 		    //column check all
 		    $('.check-all').click(function() {
 		    	if ($(this).prop('checked')) {
@@ -229,44 +252,202 @@
 		    })
 
 		    //Show add section
-		    $('#formBtn').click( function() {
-		    	var title = "Add New Data";
-		    	$('#formModal').modal();
-		    	$('#formModal .modal-title').html(title);
-		    })
+		    $('#addBtn').click( function() {
+  				document.getElementById(mainForm).reset();
+  				resetNotice();
+		    	formModal.modal('toggle');
+		    	formModalTitle.html("Add New Data");
+		    	formModalButton.html("Add");
+		    });
 
-		    //multiple delete
-		    $('.deleteBtn').click( function() {
-		    	var title = [];
-		    	$('.checkbox:checked').each(function () {
-		    		title[title.length] = $(this).val();
+		    //submit form modal
+		    formModalButton.click(function(){
+		    	var action = formModalButton.text();
+		    	if (action == 'Edit') {
+		    		postData('PUT',viewData.id);
+		    	}
+		    	else {
+		    		postData('POST')
+		    	}
+	    	});
+
+		    //Show multiple delete
+		    $('#deleteBtn').click( function() {
+		    	var ids = [];
+		    	var checked = [];
+		    	var names = [];
+		    	var body = '<br><br><br><p>Are you sure want to delete all data above ?</p>';
+
+		    	$('.checkbox').each(function () {
+		    		ids[ids.length] = $(this).val();
 		    	});
-		    	$('#viewModal').modal();
-		    	$('#viewModal .modal-title').html(JSON.stringify(title));
-		    })
+		    	$('.checkbox:checked').each(function () {
+		    		checked[checked.length] = $(this).val();
+		    	});
+		    	$('.name').each(function (i) {
+		    		if (checked.includes(ids[i])) {
+			    		names[names.length] = $(this).text();
+			    	}
+		    	});
+
+		    	selected = JSON.stringify(checked);
+
+		    	//open-modal
+		    	viewModal.modal();
+		    	viewModalTitle.html('Multiple Delete');
+		    	viewModalBody.html(names + body);
+
+		    	viewModalButton.removeClass('btn-primary');
+		    	viewModalButton.addClass('btn-danger');
+		    	viewModalButton.html('Delete');
+		    });
+
+		    //delete or edit send ajax
+	    	viewModalButton.click(function(){
+	    		var action = $(this).text();
+
+	    		//delete action
+	    		if(action == 'Delete') {
+
+			    	var data = selected;
+		    		if (data == '[]') {
+		    			alert('please select one to delete');
+		    		}
+		    		else {
+			    		$.ajax({
+			    			url: path+'/'+data,
+			    			type: 'DELETE',
+			    			dataType: 'json',
+			    			data: '_csrf='+ $.cookie('XSRF-TOKEN'),
+			    			success: function (data) {
+			    				//will print message status and refresh datatatables
+			    				viewModal.modal('toggle');
+			    				window.scrollTo(0,0);
+			    				$(table).DataTable().ajax.reload();
+			    				notif(data.status,data.message);
+			    			},
+			    			error: function (xhr) {
+			    				alert('failed with error code : ' + xhr.status)
+			    			}
+			    		});
+			    	}
+			    }
+			    else { //jika edit
+			    	editSection(0)
+			    }
+	    	});
+
 		} );
 
-	    //Show View section
-		function viewModal(data) {
+	  //Show View section
+		function viewSection(id) {
+			getData(id,
+			  function() {
+				var title = 'View : ' + viewData.name;
+	    	var body = '';
+
+	    	//tampilan
+	    	for (var field in fields) {
+		    	body += '<p>'+fields[field]+' : ' + viewData[field]  + '</p>';
+	    	}
+	    	//end tampilan
+
+		  	viewModal.modal();
+		  	viewModalTitle.html(title);
+		  	viewModalBody.html(body);
+		  	viewModalButton.removeClass('btn-danger');
+		  	viewModalButton.addClass('btn-primary');
+		  	viewModalButton.html('Edit');
+			});
+		}
+
+		function getData(id,callback) {
 			$(document).ready(function() {
-				var point = path+'/'+data;
-			    $.ajax({url: point, success: function(result){
+				var point = path+'/'+id;
+		    $.ajax({url: point, success: function(result){
+		    	//assign to global variabel
+		    	viewData = result.data;
+		    	callback();
+		    }});
+			});
+		}
 
-			    	var title = 'View : ' + result.data.name;
-			    	var body = '';
+		function postData(type,id) {
+			var point = path;
+			if (typeof id !== 'undefined') {
+				point += '/'+id;
+			}
 
-			    	body += '<p>Name'+result.data.prefix+' '+ result.data.name +'</p>';
-			    	body += '<p>Name' + result.data.name + '</p>';
-			    	body += '<p>Name' + result.data.name + '</p>';
-			    	body += '<p>Name' + result.data.name + '</p>';
-			    	body += '<p>Name' + result.data.name + '</p>';
+  		$.ajax({
+  			url: point,
+  			type: type,
+  			dataType: 'json',
+  			data: '_csrf='+ $.cookie('XSRF-TOKEN') +'&'+ $('#'+mainForm).serialize(),
+  			success: function (data) {
+  				console.log(data);
+  				if (data.status == 'validation') {
+  					var message = JSON.parse(data.message);
+  					message = message[0];
+  					showNotice(message);
+    			}
+    			else {
+    				//will print message status and refresh datatables
+    				document.getElementById(mainForm).reset();
+    				resetNotice();
+    				formModal.modal('toggle');
+    				window.scrollTo(0,0);
+    				$(table).DataTable().ajax.reload();
+    				notif(data.status,data.message);
+    			}
+  			},
+  			error: function (xhr) {
+  				alert('failed with error code : ' + xhr.status)
+  			}
+  		});
+		}
 
-			    	$('#viewModal').modal();
-			    	$('#viewModal .modal-title').html(title);
-			    	$('#viewModal .modal-body').html(body);
+		function resetNotice() {
+    	$('.help-block').each(function(){
+				$(this).css('display','none');
+			});
+    	$('.form-group').each(function(){
+				$(this).removeClass('has-error');
+			});
+		}
 
-			    }});
-			} )
+		function showNotice(data) {
+			var field = $('#'+data.field+'-group');
+			var info = $('#'+data.field+'-group .help-block');
+
+			field.addClass('has-error');
+			info.html(data.validation+' : '+data.message)
+			info.css('display','inline')
+			console.log(data);
+		}
+
+		function editSection(id) {
+			function show() {
+				resetNotice();
+				document.getElementById(mainForm).reset();
+
+	    	formModalButton.html('Edit');
+	    	formModal.modal('toggle');
+
+	    	//assign ke form
+	    	for (var field in fields) {
+	    		$('#formModal #'+field).val(viewData[field]);
+	    	}
+	    	//end assign
+			}
+
+			//jika terdapat id ambil kirim request data baru
+			if (id != 0) {
+				getData(id,show);
+			}
+			else {
+	    	viewModal.modal('toggle');
+				show()
+			}
 		}
 
 	</script>

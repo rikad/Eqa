@@ -12,12 +12,14 @@
 |
 */
 
-// const Factory = use('Factory')
+//const Factory = use('Factory')
+const User = use('App/Model/User')
 
 class DatabaseSeeder {
 
   * run () {
-    // yield Factory.model('App/Model/User').create(5)
+     //yield Factory.model('App/Model/User').create(5)
+    yield User.create({email: 'rikad', password: '1234'})
   }
 
 }

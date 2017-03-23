@@ -2,6 +2,7 @@
 
 const People = use('App/Model/People')
 const DB = use('Database')
+const Validator = use('Validator')
 
 class PeopleController {
 
@@ -82,14 +83,35 @@ class PeopleController {
   }
 
   * store(request, response) {
-    //
+    const data = request.except('_csrf')
+    const validation = yield Validator.validate(data, People.rules)
+    var status = 'success';
+    var message = 'success';
+
+    if (validation.fails()) {
+      status = 'validation';
+      message = JSON.stringify(validation.messages());
+    }
+    else {
+      try {
+        var person = yield People.create(data)
+      }
+      catch (err) {
+        message = 'Update data of '+person.name+' Failed : Please Contact Your administrator';
+        status = 'danger';
+        console.log(err);
+      }
+    }
+
+    const output = JSON.stringify({ status: status, message: message})
+    response.json(output)
   }
 
   * show(request, response) {
 
     const data = yield People.find(request.param('id'))
-    var status='success'
-    var message='success' 
+    var status='success';
+    var message='success';
 
     if (data == null){
       status = 'error';
@@ -101,15 +123,59 @@ class PeopleController {
   }
 
   * edit(request, response) {
-    //
   }
 
   * update(request, response) {
-    //
+    const id = request.param('id')
+    const data = request.except('_csrf')
+    const validation = yield Validator.validate(data, People.rules)
+
+    var status = 'success';
+    var message = 'success';
+
+    if (validation.fails()) {
+      status = 'validation';
+      message = JSON.stringify(validation.messages());
+    }
+    else {
+      try {
+        var person = yield People.findBy('id', id)
+        person.fill(data)
+        yield person.save()
+        message = 'Update data of '+person.name+' Success';
+      }
+      catch (err) {
+        message = 'Update data of '+person.name+' Failed : Please Contact Your administrator';
+        status = 'danger';
+        console.log(err);
+      }
+    }
+
+    const output = JSON.stringify({ status: status, message: message})
+    response.json(output)
   }
 
   * destroy(request, response) {
-    //
+    var data = decodeURI(request.param('id'))
+    var ids = JSON.parse(data)
+    var status='success';
+    var message='Success Deleted';
+
+    for(var i=0; i<ids.length; i++) {
+      try {
+        var data = yield People.findBy('id', ids[i])
+        yield data.delete()
+      }
+      catch (err) {
+        status = 'danger';
+        message = 'Delete data of '+data.name+' Failed : Please Contact Your administrator';
+        console.log(err);
+      }
+    }
+
+
+    const output = { status: status, message: message}
+    response.json(output)
   }
 
   //tambahan untuk view

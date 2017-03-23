@@ -18,6 +18,14 @@
 const Route = use('Route')
 
 Route.on('/').render('welcome')
+//Route.get('profile', 'UsersController.profile')
+//Route.post('login', 'UsersController.login')
+
+Route.get('/login', 'AuthController.index')
+Route.post('/login', 'AuthController.login')
+
+Route.get('/register', 'RegisterController.index')
+Route.post('register', 'RegisterController.doRegister')
 
 
 Route.get('/rikad/:id', function * (request, response) {
