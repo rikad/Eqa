@@ -1,88 +1,443 @@
 {% extends 'layout_app' %}
 
 {% block content %}
+
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
+
+				<!-- Navigation-->
 				<ul class="breadcrumb">
 					<li><a href="#">Dashboard</a></li>
-					<li class="active">Barang</li>
+					<li class="active">Form</li>
 				</ul>
+				<!-- End Navigation-->
+
+				<!-- content-->
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h2 class="panel-title">Organization</h2>
+						<h2 class="panel-title">Form</h2>
 					</div>
 					<div class="panel-body">
+						<!-- Button-->
 						<div class="action" align="right">
-							<button class="btn btn-primary" data-toggle="modal" data-target="#myModal">Tambah</button> </p>
+							<button class="btn btn-primary" id="addBtn">Add</button>
 						</div>
+						<!-- End Button-->
+						<hr>
 
-						<table class="tree table table-striped table-hover table-condensed">
+						<table id="data" class="tree table table-striped table-hover table-condensed">
 							<thead>
 								<tr>
+									<th class="column-check"><input class="check-all" type="checkbox"/></th>
 									<th>#</th>
-									<th>Name</th>
 									<th>Form</th>
+									<th>Abbreviation</th>
+									<th>Description</th>
 									<th>Layer</th>
 									<th>Action</th>
 								</tr>
-						</thead>
-
-						<tbody>
-							{% set no = 0 %}
-						    {% for item in data %}
-							{% set no = no + 1 %}
+							</thead>
+							<tfoot>
 								<tr>
-									<td>{{ no }}</td>
-									<td>{{ item.form }}</td>
-									<td>{{ item.abbreviation }}</a></td>
-									<td>{{ item.description }}</td>
-									<td>{{ item.layer }}</td>
-									<td>action</td>
-				                </tr>
-
-						    {% else %}
-						    <p> Data Is Empty </p>
-						    {% endfor %}
-						</tbody>
+									<td colspan="7">With selected <button class="btn btn-danger btn-sm" id="deleteBtn">Delete</button>
+									</td>
+								</tr>
+							</tfoot>
+						<table>
 
     				</div>
 				</div>
+				<!-- End content-->
 
-				<!-- Modal -->
-				<div class="modal fade" id="myModal" role="dialog">
-				<div class="modal-dialog">
+				<!-- Modal Add or edit-->
+				<div class="modal fade" id="formModal" role="dialog">
+					<div class="modal-dialog">
 
-				<!-- Modal content-->
-				<div class="modal-content">
-				<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Modal Header</h4>
-				</div>
-				<div class="modal-body">
-				<p>Some text in the modal.</p>
-				</div>
-				<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				</div>
-				</div>
+					<!-- Modal content-->
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title"></h4>
+							</div>
+							<div class="modal-body">
+							<form class="form-horizontal" name="mainForm" id="mainForm">
+								<div class="form-group" id="form-group">
+								    <label class="control-label" for="form"> Form Name:</label>
+								    <input type="text" name="form" class="form-control" id="form">
+								    <p style="display:none" class="help-block"></p>
+								</div>
+								<div class="form-group" id="abbreviation-group">
+							    	<label class="control-label" for="name">Abbreviation :</label>
+							    	<input type="text" name="abbreviation" class="form-control" id="abbreviation">
+							    	<p style="display:none" class="help-block"></p>
+								</div>
+								<div class="form-group" id="description-group">
+								    <label class="control-label" for="description">Description :</label>
+								    <input type="text" name="description" class="form-control" id="description">
+								    <p style="display:none" class="help-block"></p>
+								</div>
+								<div class="form-group" id="layer-group">
+								    <label class="control-label" for="suffix">Layer :</label>
+								    <input type="number" name="layer" class="form-control" id="layer">
+								    <p style="display:none" class="help-block"></p>
+								</div>
+							</form>
+							</div>
 
-				</div>
-				</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary modal-btn">Add</button>
+								<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+							</div>
+						</div>
+					<!-- End Modal content-->
 
+					</div>
+				</div>
+				<!-- End Modal Add or edit-->
+
+				<!-- Modal View -->
+				<div class="modal fade" id="viewModal" role="dialog">
+					<div class="modal-dialog">
+
+					<!-- Modal content-->
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title"></h4>
+							</div>
+							<div class="modal-body">
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn modal-btn">Edit</button>
+								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							</div>
+						</div>
+					<!-- End Modal content-->
+
+					</div>
+				</div>
+				<!-- End Modal View-->
+
+			<!-- end of col md 12-->
 			</div>
+		<!-- end of row-->
 		</div>
+	<!-- end of container-->
 	</div>
+
 {% endblock %}
 
 {% block css %}
-	<link rel="stylesheet" href="/css/jquery.treegrid.css">
+    <link href="/css/datatables/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap/bootstrap-datetimepicker.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block script %}
-	<script type="text/javascript" src="/js/jquery.treegrid.min.js"></script>
-	<script type="text/javascript">
-	  $('.tree').treegrid();
+    <script src="/js/datatables/jquery.dataTables.min.js"></script>
+    <script src="/js/jquery/jquery.cookie.js"></script>
+    <script src="/js/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="/js/moment.min.js"></script>
+    <script src="/js/bootstrap/bootstrap-datetimepicker.min.js"></script>
+
+	<script>
+		var path ="{{ 'forms.index' | route() }}";
+		var table = '#data';
+		var order = [[ 5, "asc" ]];
+		var fields = { form: "Form", abbreviation : "Abbreviation", description: "Description", layer: "Layer"  };
+		var columns = 
+			[{
+	      	"data":"id",
+	      	"name":"id",
+	      	"render": function(data){ 
+				return '<input class="checkbox" type="checkbox" name="checked[]" value="'+data+'"/>'
+	      	},
+	      	"orderable":false,
+	      	"searchable":false
+	      },{
+	      	"data":"id",
+	      	"name":"id",
+	      	"orderable":false,
+	      	"searchable":false
+	      },{
+	      	"data":"form",
+	      	"name":"form",
+	      	"render": function(data){ 
+						return '<span class="name">'+data+'</span>'
+	      	},
+	      	"orderable":true,
+	      	"searchable":true
+	      },{
+	      	"data":"abbreviation",
+	      	"name":"abbreviation",
+	      	"orderable":true,
+	      	"searchable":true
+	      },{
+	      	"data":"description",
+	      	"name":"description",
+	      	"orderable":true,
+	      	"searchable":true
+	      },{
+	      	"data":"layer",
+	      	"name":"layer",
+	      	"orderable":true,
+	      	"searchable":true
+	      },{
+	      	"data":"id",
+	      	"name":"id",
+	      	"render": function(id){ 
+	      		return '<button class="btn btn-xs btn-info" onclick="viewSection('+id+')">View</button>'
+	      	},
+	      	"orderable":false,
+	      	"searchable":false
+	      }
+	    ];
+
+	  //stop edit be carefull
+		var selected = '';
+		var viewData = '';
+		var mainForm = 'mainForm'; //don't use #
+
+		//jquery object
+		var formModal = $('#formModal');
+		var formModalTitle = $('#formModal .modal-title');
+		var formModalBody = $('#formModal .modal-body');
+  		var formModalButton = $('#formModal .modal-btn');
+		var viewModal = $('#viewModal');
+		var viewModalTitle = $('#viewModal .modal-title');
+		var viewModalBody = $('#viewModal .modal-body');
+  		var viewModalButton = $('#viewModal .modal-btn');
+
+		//datatable
+		$(document).ready(function() {
+		    var t = $(table).DataTable( {
+				"processing": true,
+				"serverSide": true,
+				"ajax": path,
+				"columns": columns,
+				"order": order,
+			    "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+					var index = iDisplayIndex +1;
+					$('td:eq(1)',nRow).html(index);
+					return nRow;
+				}
+		    } );
+		} );
+
+		//button function
+		$(document).ready(function() {
+
+		    //datepicker
+        $('#date').datetimepicker({ format: 'Y-M-D' });
+
+		    //column check all
+		    $('.check-all').click(function() {
+		    	if ($(this).prop('checked')) {
+			    	$('.checkbox').prop('checked',true);
+		    	}
+		    	else {
+			    	$('.checkbox').prop('checked',false);
+		    	}
+		    })
+
+		    //Show add section
+		    $('#addBtn').click( function() {
+  				document.getElementById(mainForm).reset();
+  				resetNotice();
+		    	formModal.modal('toggle');
+		    	formModalTitle.html("Add New Data");
+		    	formModalButton.html("Add");
+		    });
+
+		    //submit form modal
+		    formModalButton.click(function(){
+		    	var action = formModalButton.text();
+		    	if (action == 'Edit') {
+		    		postData('PUT',viewData.id);
+		    	}
+		    	else {
+		    		postData('POST')
+		    	}
+	    	});
+
+		    //Show multiple delete
+		    $('#deleteBtn').click( function() {
+		    	var ids = [];
+		    	var checked = [];
+		    	var names = [];
+		    	var body = '<br><br><br><p>Are you sure want to delete all data above ?</p>';
+
+		    	$('.checkbox').each(function () {
+		    		ids[ids.length] = $(this).val();
+		    	});
+		    	$('.checkbox:checked').each(function () {
+		    		checked[checked.length] = $(this).val();
+		    	});
+		    	$('.name').each(function (i) {
+		    		if (checked.includes(ids[i])) {
+			    		names[names.length] = $(this).text();
+			    	}
+		    	});
+
+		    	selected = JSON.stringify(checked);
+
+		    	//open-modal
+		    	viewModal.modal();
+		    	viewModalTitle.html('Multiple Delete');
+		    	viewModalBody.html(names + body);
+
+		    	viewModalButton.removeClass('btn-primary');
+		    	viewModalButton.addClass('btn-danger');
+		    	viewModalButton.html('Delete');
+		    });
+
+		    //delete or edit send ajax
+	    	viewModalButton.click(function(){
+	    		var action = $(this).text();
+
+	    		//delete action
+	    		if(action == 'Delete') {
+
+			    	var data = selected;
+		    		if (data == '[]') {
+		    			alert('please select one to delete');
+		    		}
+		    		else {
+			    		$.ajax({
+			    			url: path+'/'+data,
+			    			type: 'DELETE',
+			    			dataType: 'json',
+			    			data: '_csrf='+ $.cookie('XSRF-TOKEN'),
+			    			success: function (data) {
+			    				//will print message status and refresh datatatables
+			    				viewModal.modal('toggle');
+			    				window.scrollTo(0,0);
+			    				$(table).DataTable().ajax.reload();
+			    				notif(data.status,data.message);
+			    			},
+			    			error: function (xhr) {
+			    				alert('failed with error code : ' + xhr.status)
+			    			}
+			    		});
+			    	}
+			    }
+			    else { //jika edit
+			    	editSection(0)
+			    }
+	    	});
+
+		} );
+
+	  //Show View section
+		function viewSection(id) {
+			getData(id,
+			  function() {
+				var title = 'View : ' + viewData.name;
+	    	var body = '';
+
+	    	//tampilan
+	    	for (var field in fields) {
+		    	body += '<p>'+fields[field]+' : ' + viewData[field]  + '</p>';
+	    	}
+	    	//end tampilan
+
+		  	viewModal.modal();
+		  	viewModalTitle.html(title);
+		  	viewModalBody.html(body);
+		  	viewModalButton.removeClass('btn-danger');
+		  	viewModalButton.addClass('btn-primary');
+		  	viewModalButton.html('Edit');
+			});
+		}
+
+		function getData(id,callback) {
+			$(document).ready(function() {
+				var point = path+'/'+id;
+		    $.ajax({url: point, success: function(result){
+		    	//assign to global variabel
+		    	viewData = result.data;
+		    	callback();
+		    }});
+			});
+		}
+
+		function postData(type,id) {
+			var point = path;
+			if (typeof id !== 'undefined') {
+				point += '/'+id;
+			}
+
+  		$.ajax({
+  			url: point,
+  			type: type,
+  			dataType: 'json',
+  			data: '_csrf='+ $.cookie('XSRF-TOKEN') +'&'+ $('#'+mainForm).serialize(),
+  			success: function (data) {
+  				console.log(data);
+  				if (data.status == 'validation') {
+  					var message = JSON.parse(data.message);
+  					message = message[0];
+  					showNotice(message);
+    			}
+    			else {
+    				//will print message status and refresh datatables
+    				document.getElementById(mainForm).reset();
+    				resetNotice();
+    				formModal.modal('toggle');
+    				window.scrollTo(0,0);
+    				$(table).DataTable().ajax.reload();
+    				notif(data.status,data.message);
+    			}
+  			},
+  			error: function (xhr) {
+  				alert('failed with error code : ' + xhr.status)
+  			}
+  		});
+		}
+
+		function resetNotice() {
+    	$('.help-block').each(function(){
+				$(this).css('display','none');
+			});
+    	$('.form-group').each(function(){
+				$(this).removeClass('has-error');
+			});
+		}
+
+		function showNotice(data) {
+			var field = $('#'+data.field+'-group');
+			var info = $('#'+data.field+'-group .help-block');
+
+			field.addClass('has-error');
+			info.html(data.validation+' : '+data.message)
+			info.css('display','inline')
+			console.log(data);
+		}
+
+		function editSection(id) {
+			function show() {
+				resetNotice();
+				document.getElementById(mainForm).reset();
+
+	    	formModalButton.html('Edit');
+	    	formModal.modal('toggle');
+
+	    	//assign ke form
+	    	for (var field in fields) {
+	    		$('#formModal #'+field).val(viewData[field]);
+	    	}
+	    	//end assign
+			}
+
+			//jika terdapat id ambil kirim request data baru
+			if (id != 0) {
+				getData(id,show);
+			}
+			else {
+	    	viewModal.modal('toggle');
+				show()
+			}
+		}
+
 	</script>
 {% endblock %}
-

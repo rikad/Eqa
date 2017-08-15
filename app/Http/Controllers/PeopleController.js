@@ -1,8 +1,11 @@
 'use strict'
 
-const People = use('App/Model/People')
+const MainTable = use('App/Model/People')
 const DB = use('Database')
 const Validator = use('Validator')
+
+const ViewNjk = 'people';
+const Table = 'po_people';
 
 class PeopleController {
 
@@ -27,7 +30,7 @@ class PeopleController {
       //cek for searching
       if (search != false) {
         // if user search
-        var data = yield DB.table('po_people')
+        var data = yield DB.table(Table)
                           .orderBy(activeColumnOrder,orderBy)
                           .offset(parseInt(start))
                           .limit(parseInt(limit))
@@ -40,7 +43,7 @@ class PeopleController {
                           })
 
         //cek total filtered data with no limit for count all data
-        var totalFiltered = yield DB.table('po_people')
+        var totalFiltered = yield DB.table(Table)
                           .select(DB.raw("count('*') as total"))
                           .where(function() {
                             for (let item of columns) {
@@ -55,7 +58,7 @@ class PeopleController {
       }
       else {
         //if not search
-        var data = yield DB.table('po_people')
+        var data = yield DB.table(Table)
                             .orderBy(activeColumnOrder,orderBy)
                             .offset(parseInt(start))
                             .limit(parseInt(limit))
@@ -63,11 +66,11 @@ class PeopleController {
     }
     else {
       //default filter
-      var data = yield DB.table('po_people').select('*').orderBy('name','asc').offset(parseInt(start)).limit(parseInt(limit))
+      var data = yield DB.table(Table).select('*').offset(parseInt(start)).limit(parseInt(limit))
     }
 
     //check total data
-    const total = yield People.query().count('id as total').first()
+    const total = yield MainTable.query().count('id as total').first()
     var recordsTotal = total.total
 
     //check if not filtered recordsfiltered is same as recordsTotal
@@ -84,7 +87,7 @@ class PeopleController {
 
   * store(request, response) {
     const data = request.except('_csrf')
-    const validation = yield Validator.validate(data, People.rules)
+    const validation = yield Validator.validate(data, MainTable.rules)
     var status = 'success';
     var message = 'success';
 
@@ -94,7 +97,7 @@ class PeopleController {
     }
     else {
       try {
-        var person = yield People.create(data)
+        var person = yield MainTable.create(data)
       }
       catch (err) {
         message = 'Update data of '+person.name+' Failed : Please Contact Your administrator';
@@ -109,7 +112,7 @@ class PeopleController {
 
   * show(request, response) {
 
-    const data = yield People.find(request.param('id'))
+    const data = yield MainTable.find(request.param('id'))
     var status='success';
     var message='success';
 
@@ -128,7 +131,7 @@ class PeopleController {
   * update(request, response) {
     const id = request.param('id')
     const data = request.except('_csrf')
-    const validation = yield Validator.validate(data, People.rules)
+    const validation = yield Validator.validate(data, MainTable.rules)
 
     var status = 'success';
     var message = 'success';
@@ -139,7 +142,7 @@ class PeopleController {
     }
     else {
       try {
-        var person = yield People.findBy('id', id)
+        var person = yield MainTable.findBy('id', id)
         person.fill(data)
         yield person.save()
         message = 'Update data of '+person.name+' Success';
@@ -163,7 +166,7 @@ class PeopleController {
 
     for(var i=0; i<ids.length; i++) {
       try {
-        var data = yield People.findBy('id', ids[i])
+        var data = yield MainTable.findBy('id', ids[i])
         yield data.delete()
       }
       catch (err) {
@@ -180,7 +183,7 @@ class PeopleController {
 
   //tambahan untuk view
   * view(request, response) {
-    yield response.sendView('people');
+    yield response.sendView(ViewNjk);
   }
 
 }

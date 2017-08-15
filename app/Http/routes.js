@@ -27,6 +27,10 @@ Route.post('/login', 'AuthController.login')
 Route.get('/register', 'RegisterController.index')
 Route.post('register', 'RegisterController.doRegister')
 
+// import excel
+Route.get('/excel', 'ExcelController.index')
+Route.post('/excel', 'ExcelController.store')
+
 
 Route.get('/rikad/:id', function * (request, response) {
   const id = request.param('id')
@@ -34,10 +38,8 @@ Route.get('/rikad/:id', function * (request, response) {
 })
 
 Route.group('AdminView', function () {
-	Route.resource('organizations','OrganizationController')
-	Route.resource('forms','FormController')
-	Route.resource('todo','TodoController')
-
+	Route.get('organizations', 'OrganizationController.view')
+	Route.get('forms', 'FormController.view')
 	Route.get('people', 'PeopleController.view')
 }).prefix('admin')
 
@@ -45,5 +47,4 @@ Route.group('AdminRest', function () {
 	Route.resource('organizations','OrganizationController')
 	Route.resource('forms','FormController')
 	Route.resource('people','PeopleController')
-	Route.resource('todo','TodoController')
 }).prefix('admin/api')
